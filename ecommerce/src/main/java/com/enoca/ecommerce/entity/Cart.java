@@ -1,6 +1,8 @@
 package com.enoca.ecommerce.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +11,14 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "cart", schema = "enoca")
 public class Cart {
-    private Order order;
+    @Id
+    private long id;
+    
+
+    private int quantity;
+    private double totalPrice;
+    
 
 }
