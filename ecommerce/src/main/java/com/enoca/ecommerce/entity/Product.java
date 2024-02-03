@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private long id;
     @Column(name = "product_name")
     private String name;
@@ -20,5 +21,13 @@ public class Product {
     private long stock;
     @Column(name = "product_price")
     private double price;
- 
+
+    @ManyToOne(cascade ={CascadeType.DETACH, CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+    @ManyToOne(cascade ={CascadeType.DETACH, CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    @JoinColumn(name = "costumer_cart")
+    private Cart cart;
+
 }

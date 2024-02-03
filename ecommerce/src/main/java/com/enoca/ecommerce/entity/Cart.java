@@ -1,11 +1,12 @@
 package com.enoca.ecommerce.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -14,11 +15,26 @@ import lombok.NoArgsConstructor;
 @Table(name = "cart", schema = "enoca")
 public class Cart {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private long id;
     
-
+    @Column(name = "quantity")
     private int quantity;
-    private double totalPrice;
     
+    @Column(name = "total_price")
+    private double totalPrice;
+
+    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    @JoinColumn(name = "customer_id")
+    @JsonBackReference
+    private Customer customer;
+
+    @OneToMany(mappedBy = "cart" , cascade = {CascadeType.DETACH, CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    private List<Product> products;
+
+    public void setProducts(Product product) {
+        products.add(product);
+    }
 
 }
