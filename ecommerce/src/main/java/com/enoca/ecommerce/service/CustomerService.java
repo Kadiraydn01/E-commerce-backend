@@ -9,6 +9,6 @@ public interface CustomerService {
     List<Customer> listCustomers();
     Customer getCustomer(Long id);
     Customer updateCustomer(Customer customer);
-    Boolean deleteCustomer(Long id);
+    Customer deleteCustomer(Long id); 
     
 }

@@ -2,30 +2,44 @@ package com.enoca.ecommerce.service;
 
 import com.enoca.ecommerce.entity.Cart;
 import com.enoca.ecommerce.entity.Customer;
+import com.enoca.ecommerce.entity.Product;
 import com.enoca.ecommerce.repository.CartRepository;
+import com.enoca.ecommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
-public class CartServiceImpl implements CartService{
+public class CartServiceImpl implements CartService {
     @Autowired
     private CartRepository cartRepository;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private ProductService productService;
+
     @Override
-public Cart createCart(Cart cart, Customer customer) {
-    
-    Cart existingCart = cartRepository.findCartByCustomerId(customer.getId());
-    if (existingCart != null) {
-        existingCart.setQuantity(existingCart.getQuantity() + cart.getQuantity());
-        return existingCart;
-    } else {
-        
-        Cart newCart = new Cart();
-        newCart.setQuantity(cart.getQuantity());
-        newCart.setTotalPrice(cart.getTotalPrice());
-        newCart.setCustomer(customer);
-        return cartRepository.save(newCart);
+    public Cart createCart(Cart cart, Customer customer) {
+
+        List<Product> products = new ArrayList<>();
+        long totalPrice = 0;
+        for (Product product : cart.getProducts()) {
+            Product existingProduct = productService.getProduct(product.getId());
+            if (existingProduct != null) {
+                products.add(existingProduct);
+                totalPrice +=  (existingProduct.getPrice() * cart.getQuantity());
+            }
+        }
+
+        cart.setProducts(products);
+        cart.setTotalPrice(totalPrice);
+        cart.setCustomer(customer);
+
+
+        return cartRepository.save(cart);
     }
-}
 
     @Override
     public Cart getCart(long id) {
@@ -38,8 +52,72 @@ public Cart createCart(Cart cart, Customer customer) {
     }
 
     @Override
-    public void deleteCart(long id) {
-        cartRepository.deleteById(id);
+    public Cart deleteCart(long id) {
+        Cart cart = getCart(id);
+        if (cart != null) {
+            cartRepository.delete(cart);
+        }
+        return cart;
     }
 
+    @Override
+    public Cart addProductToCart(Product product, int quantity, Cart cart) {
+        product = productRepository.findById(product.getId()).orElse(null);
+        if (product != null) {
+            for (int i = 0; i < quantity; i++) {
+                cart.getProducts().add(product);
+            }
+            cart.setTotalPrice((long) (cart.getTotalPrice() + product.getPrice() * quantity));
+            return cartRepository.save(cart);
+        }
+        return null;
+    }
+
+    @Override
+    public Cart removeProductFromCart(Product product, int quantity, Cart cart) {
+        product = productRepository.findById(product.getId()).orElse(null);
+        if (product != null) {
+            for (int i = 0; i < quantity; i++) {
+                cart.getProducts().remove(product);
+            }
+            cart.setTotalPrice(Math.max(0,(long) (cart.getTotalPrice() - product.getPrice() * quantity)));
+
+            return cartRepository.save(cart);
+        }
+        return null;
+    }
+
+    public Cart increaseProductQuantity(Product product, int quantity, Cart cart) {
+
+        boolean productExistsInCart = cart.getProducts().stream()
+            .anyMatch(p -> p.getId() == product.getId());
+    
+        if (!productExistsInCart) {
+
+            cart.getProducts().add(product);
+        }
+    
+
+        cart.setQuantity(cart.getQuantity() + quantity);
+        cart.setTotalPrice((long) (cart.getTotalPrice() + product.getPrice() * quantity));
+    
+
+        return cartRepository.save(cart);
+    }
+
+    public Cart decreaseProductQuantity(Product product, int quantity, Cart cart) {
+
+        boolean productExistsInCart = cart.getProducts().stream()
+                .anyMatch(p -> p.getId() == product.getId());
+
+        if (productExistsInCart) {
+            cart.getProducts().remove(product);
+        }
+
+        cart.setQuantity(Math.max(0,cart.getQuantity() - quantity) );
+        cart.setTotalPrice(Math.max(0,(long) (cart.getTotalPrice() - product.getPrice() * quantity)));
+
+
+        return cartRepository.save(cart);
+    }
 }

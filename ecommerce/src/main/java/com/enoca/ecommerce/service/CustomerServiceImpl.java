@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
 public class CustomerServiceImpl implements CustomerService{
 
@@ -33,8 +34,13 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     @Override
-    public Boolean deleteCustomer(Long id) {
-        customerRepository.deleteById(id);
-        return true;
+    public Customer deleteCustomer(Long id) {
+        Customer customer = customerRepository.findById(id).orElse(null);
+        if (customer != null) {
+            customerRepository.deleteById(id);
+            return customer;
+        } else {
+            return null;
+        }
     }
 }

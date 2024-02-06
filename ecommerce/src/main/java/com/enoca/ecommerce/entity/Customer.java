@@ -18,13 +18,17 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
+
     @Column(name = "username")
     private String username;
+
     @Column(name = "password")
     private String password;
+
     @OneToOne(cascade =CascadeType.ALL, mappedBy = "customer")
     @JsonManagedReference
     private Cart cart;
+
     @OneToMany(cascade =CascadeType.ALL, mappedBy = "customer")
     private List<Order> orders;
    

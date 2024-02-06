@@ -22,8 +22,8 @@ public class Cart {
     @Column(name = "quantity")
     private int quantity;
     
-    @Column(name = "total_price")
-    private double totalPrice;
+    @Column(name = "cart_price")
+    private Long totalPrice;
 
     @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     @JoinColumn(name = "customer_id")
@@ -33,8 +33,11 @@ public class Cart {
     @OneToMany(mappedBy = "cart" , cascade = {CascadeType.DETACH, CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     private List<Product> products;
 
-    public void setProducts(Product product) {
-        products.add(product);
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
+
+
 
 }
