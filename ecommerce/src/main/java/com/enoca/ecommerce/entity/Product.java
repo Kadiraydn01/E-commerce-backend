@@ -23,6 +23,21 @@ public class Product {
     private long stock;
     @Column(name = "product_price")
     private double price;
+    @Column(name = "product_description")
+    private String description;
+    @Column(name = "product_image")
+    private String image;
+    @Column(name = "product_color")
+    private String color;
+    @Column(name = "product_brand")
+    private String brand;
+    @Column(name = "guarantee")
+    private String guarantee;
+    @Column(name = "ram")
+    private long ram;
+    @Column(name = "memory")
+    private long memory;
+
 
 
     @ManyToOne(cascade ={CascadeType.DETACH, CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})

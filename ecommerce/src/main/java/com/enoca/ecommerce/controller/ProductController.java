@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/product")
+@CrossOrigin(origins = "*")
 public class ProductController {
 
     @Autowired
@@ -18,6 +19,7 @@ public class ProductController {
 
     @PostMapping("/add")
     public ResponseEntity<ProductResponse> addProduct(@RequestBody Product product) {
+
         Product createdProduct = productService.addProduct(product);
         if (createdProduct != null) {
             ProductResponse response = DtoConverter.convertToProductResponse(createdProduct);
@@ -29,7 +31,7 @@ public class ProductController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<ProductResponse>> listProducts() {
+    public ResponseEntity<List<ProductResponse  >> listProducts() {
         List<Product> products = productService.listProducts();
         if (products != null) {
             List<ProductResponse> responses = DtoConverter.convertToProductResponseList(products);
@@ -40,6 +42,7 @@ public class ProductController {
     }
 
     @GetMapping("/list/{id}")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<ProductResponse> getProduct(@PathVariable Long id) {
         Product product = productService.getProduct(id);
         if (product != null) {

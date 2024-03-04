@@ -2,6 +2,7 @@ package com.enoca.ecommerce.service;
 
 import com.enoca.ecommerce.entity.Cart;
 import com.enoca.ecommerce.entity.Customer;
+import com.enoca.ecommerce.entity.Order;
 import com.enoca.ecommerce.entity.Product;
 import com.enoca.ecommerce.repository.CartRepository;
 import com.enoca.ecommerce.repository.ProductRepository;
@@ -100,6 +101,7 @@ public class CartServiceImpl implements CartService {
 
         cart.setQuantity(cart.getQuantity() + quantity);
         cart.setTotalPrice((long) (cart.getTotalPrice() + product.getPrice() * quantity));
+
     
 
         return cartRepository.save(cart);
@@ -119,5 +121,15 @@ public class CartServiceImpl implements CartService {
 
 
         return cartRepository.save(cart);
+    }
+
+    @Override
+    public Cart cartToOrder(Cart cart, Order order) {
+        order.setOrderDetails(cart.getOrders());
+        order.setTotalPrice(cart.getTotalPrice());
+        order.setCustomer(cart.getCustomer());
+        cartRepository.delete(cart);
+        return cart;
+
     }
 }

@@ -32,6 +32,8 @@ public class Cart {
 
     @OneToMany(mappedBy = "cart" , cascade = {CascadeType.DETACH, CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     private List<Product> products;
+    @OneToMany(mappedBy = "cart" , cascade = {CascadeType.DETACH, CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    private List<OrderDetail> orders;
 
 
     public void setProducts(List<Product> products) {

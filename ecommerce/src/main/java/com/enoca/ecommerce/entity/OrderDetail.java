@@ -23,6 +23,10 @@ public class OrderDetail {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @ManyToOne
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
+
     @Column(name = "price")
     private double price;
 

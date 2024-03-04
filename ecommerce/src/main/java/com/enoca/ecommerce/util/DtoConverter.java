@@ -52,7 +52,15 @@ public class DtoConverter {
         response.setId(product.getId());
         response.setName(product.getName());
         response.setPrice(product.getPrice());
-        response.setStock((int) product.getStock());
+        response.setStock(product.getStock());
+        response.setDescription(product.getDescription());
+        response.setImage(product.getImage());
+        response.setColor(product.getColor());
+        response.setBrand(product.getBrand());
+        response.setGuarantee(product.getGuarantee());
+        response.setRam(product.getRam());
+        response.setMemory(product.getMemory());
+
 
         return response;
     }
